@@ -7,3 +7,7 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 - if game has steam drm use steamless cli to decrypt
 - If game doesnt have drm just emulate
 - if game has other drm other then those then report back can not emulate or decrypt.
+
+work on:
+
+https://www.reddit.com/r/learnpython/comments/io33de/redirect_stdout_to_tkinter_text_widget/
