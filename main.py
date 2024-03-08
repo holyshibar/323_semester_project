@@ -1,4 +1,5 @@
-# pyinstaller --onefile --windowed gui.py
+# rm -r .\build\, .\dist\, .\main.spec
+# pyinstaller --onefile --windowed main.py
 
 import tkinter as tk
 from tkinter import filedialog, scrolledtext
