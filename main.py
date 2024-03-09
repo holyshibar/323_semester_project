@@ -1,22 +1,31 @@
 import tkinter as tk
 from tkinter import filedialog, scrolledtext
-from drm_analysis import DRMAnalysis  # Ensure to import the DRMAnalysis class
+from drm_analysis import DRMAnalysis
 import os
+import sys
+import io
+
+
+class PrintLogger(io.StringIO):
+    def __init__(self, log_area):
+        super().__init__()
+        self.log_area = log_area
+
+    def write(self, text):
+        self.log_area.insert(tk.END, text)
+        self.log_area.yview(tk.END)
 
 
 def browse_folder():
     folder_path = filedialog.askdirectory()
-    if folder_path:  # Check if a folder was actually selected
-        # Extracts the name of the game from the folder path
+    if folder_path:
         game_name = os.path.basename(folder_path)
-        # Set the extracted game name as the label text
         path_label.config(text=game_name)
     else:
         path_label.config(text="No folder selected")
 
 
 def decrypt():
-    # This now gets the extracted game name
     game_name = path_label.cget("text")
     if game_name == "No folder selected":
         log_area.insert(tk.END, "Please select a folder first.\n")
@@ -49,6 +58,9 @@ path_label.pack()
 
 log_area = scrolledtext.ScrolledText(app, width=40, height=10, state='normal')
 log_area.pack(pady=10)
+
+log_stream = PrintLogger(log_area)
+sys.stdout = log_stream
 
 decrypt_button = tk.Button(app, text="Decrypt", command=decrypt)
 decrypt_button.pack()
