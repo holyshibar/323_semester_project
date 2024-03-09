@@ -8,6 +8,8 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done) if game has other drm other then those then report back can not emulate or decrypt.
 
+-- add auto detecter to detect the game .exe path. If not found make label to ask for manual selection.
+
 X if game has steam drm use steamless cli to decrypt
 
 X If game doesnt have drm just emulate
