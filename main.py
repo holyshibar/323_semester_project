@@ -50,19 +50,25 @@ def decrypt():
 app = tk.Tk()
 app.title('Game Folder Selector')
 
-browse_button = tk.Button(app, text="Browse", command=browse_folder)
-browse_button.pack()
+log_area = scrolledtext.ScrolledText(app, width=40, height=10, state='normal')
+log_area.grid(row=0, column=0, sticky='nsew', padx=5, pady=5)
 
 path_label = tk.Label(app, text="No folder selected")
-path_label.pack()
+path_label.grid(row=1, column=0, sticky='nsew', padx=5, pady=5)
 
-log_area = scrolledtext.ScrolledText(app, width=40, height=10, state='normal')
-log_area.pack(pady=10)
+button_frame = tk.Frame(app)
+button_frame.grid(row=2, column=0, sticky='ew', padx=5, pady=5)
+
+browse_button = tk.Button(button_frame, text="Browse", command=browse_folder)
+browse_button.grid(row=0, column=0, padx=5)
+
+decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
+decrypt_button.grid(row=0, column=1, padx=5)
 
 log_stream = PrintLogger(log_area)
 sys.stdout = log_stream
 
-decrypt_button = tk.Button(app, text="Decrypt", command=decrypt)
-decrypt_button.pack()
+app.grid_rowconfigure(0, weight=1)
+app.grid_columnconfigure(0, weight=1)
 
 app.mainloop()
