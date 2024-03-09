@@ -6,11 +6,13 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done) integrate or use pcgamerwiki api to look at what drm the game has.
 
+(done) if game has other drm other then those then report back can not emulate or decrypt.
+
 X if game has steam drm use steamless cli to decrypt
 
 X If game doesnt have drm just emulate
 
-(done) if game has other drm other then those then report back can not emulate or decrypt.
+X decorate gui
 
 **Usage:**
 
