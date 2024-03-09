@@ -16,21 +16,30 @@ class PrintLogger(io.StringIO):
         self.log_area.yview(tk.END)
 
 
+# Store the folder_path and game_name globally
+folder_path = None
+game_name = None
+
+
 def browse_folder():
+    global folder_path, game_name
     folder_path = filedialog.askdirectory()
     if folder_path:
+        # Store the folder_path and extract the game_name
         game_name = os.path.basename(folder_path)
-        path_label.config(text=game_name)
+        path_label.config(text=folder_path)
     else:
         path_label.config(text="No folder selected")
+        game_name = None
 
 
 def decrypt():
-    game_name = path_label.cget("text")
-    if game_name == "No folder selected":
+    global game_name
+    if not game_name:
         log_area.insert(tk.END, "Please select a folder first.\n")
         return
 
+    log_area.insert(tk.END, f"Analyzing {game_name}...\n")
     drm_analysis = DRMAnalysis(game_name)
     availability_section, denuvo_detected = drm_analysis.get_pcgamingwiki_info()
 
