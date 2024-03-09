@@ -10,7 +10,7 @@ X if game has steam drm use steamless cli to decrypt
 
 X If game doesnt have drm just emulate
 
-X if game has other drm other then those then report back can not emulate or decrypt.
+(done) if game has other drm other then those then report back can not emulate or decrypt.
 
 **Usage:**
 
