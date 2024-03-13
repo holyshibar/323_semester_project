@@ -13,6 +13,7 @@ class DRMAnalysis:
             "page": self.game_name,
             "prop": "wikitext"
         }
+        print("game name:", self.game_name)
         response = requests.get(self.base_url, params=params)
         if response.status_code == 200:
             data = response.json()

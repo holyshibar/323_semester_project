@@ -21,15 +21,20 @@ folder_path = None
 game_name = None
 
 
-def browse_folder():
+def browse_file():
     global folder_path, game_name
-    folder_path = filedialog.askdirectory()
-    if folder_path:
-        # Store the folder_path and extract the game_name
+    file_path = filedialog.askopenfilename(
+        filetypes=[("Executable files", "*.exe")])
+    if file_path:
+        # Extract the folder path and the game name from the file path
+        folder_path = os.path.dirname(file_path)
+        print("folder_path:", folder_path)
         game_name = os.path.basename(folder_path)
+        print("game_name:", game_name)
         path_label.config(text=folder_path)
     else:
-        path_label.config(text="No folder selected")
+        path_label.config(text="No file selected")
+        folder_path = None
         game_name = None
 
 
@@ -68,7 +73,7 @@ path_label.grid(row=1, column=0, sticky='nsew', padx=5, pady=5)
 button_frame = tk.Frame(app)
 button_frame.grid(row=2, column=0, sticky='ew', padx=5, pady=5)
 
-browse_button = tk.Button(button_frame, text="Browse", command=browse_folder)
+browse_button = tk.Button(button_frame, text="Browse", command=browse_file)
 browse_button.grid(row=0, column=0, padx=5)
 
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
