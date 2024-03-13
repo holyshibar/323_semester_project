@@ -4,6 +4,8 @@ from drm_analysis import DRMAnalysis
 import os
 import sys
 import io
+import subprocess
+import threading
 
 
 class PrintLogger(io.StringIO):
@@ -19,6 +21,28 @@ class PrintLogger(io.StringIO):
 # Store the folder_path and game_name globally
 folder_path = None
 game_name = None
+
+
+def check_required_folder():
+    # Gets the directory of the current script
+    exe_path = os.path.dirname(os.path.abspath(__file__))
+    required_folder = os.path.join(exe_path, "Steamless.v3.1.0.3.-.by.atom0s")
+    if not os.path.exists(required_folder):
+        print("Required folder not found. Running download_required.py...")
+        # Assuming download_required.py is in the same directory as this script
+        download_script_path = os.path.join(exe_path, "download_required.py")
+        try:
+            result = subprocess.run([sys.executable, download_script_path], check=True,
+                                    text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # Instead of print, directly insert into log_area
+            log_area.insert(tk.END, result.stdout + "\n")
+            if result.stderr:
+                log_area.insert(tk.END, "Error: " + result.stderr + "\n")
+        except subprocess.CalledProcessError as e:
+            log_area.insert(
+                tk.END, "Error running download_required.py:\n" + e.stderr + "\n")
+    else:
+        print("Required folder found. Skipping download...")
 
 
 def browse_file():
@@ -84,5 +108,9 @@ sys.stdout = log_stream
 
 app.grid_rowconfigure(0, weight=1)
 app.grid_columnconfigure(0, weight=1)
+
+# Change at the end of your script, before mainloop
+thread = threading.Thread(target=check_required_folder)
+thread.start()
 
 app.mainloop()
