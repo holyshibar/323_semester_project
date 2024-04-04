@@ -6,6 +6,7 @@ import sys
 import io
 import subprocess
 import threading
+import SteamDRMStripper
 
 
 class PrintLogger(io.StringIO):
@@ -21,7 +22,7 @@ class PrintLogger(io.StringIO):
 # Store the folder_path and game_name globally
 folder_path = None
 game_name = None
-
+file_path = None
 
 def check_required_folder():
     # Gets the directory of the current script
@@ -46,7 +47,7 @@ def check_required_folder():
 
 
 def browse_file():
-    global folder_path, game_name
+    global folder_path, game_name, file_path
     file_path = filedialog.askopenfilename(
         filetypes=[("Executable files", "*.exe")])
     if file_path:
@@ -84,6 +85,15 @@ def decrypt():
 
     log_area.yview(tk.END)
 
+#Unpack and run the unpacked file if applicable
+def unpack():
+    global game_name
+    if not game_name:
+        log_area.insert(tk.END, "Please select a folder first.\n")
+    log_area.insert(tk.END, f"Unpacking {game_name}...\n")
+    SteamDRMStripper.unpack_with_steamless(file_path)
+    log_area.yview(tk.END)
+
 
 app = tk.Tk()
 app.title('Game Folder Selector')
@@ -102,6 +112,9 @@ browse_button.grid(row=0, column=0, padx=5)
 
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
 decrypt_button.grid(row=0, column=1, padx=5)
+
+decrypt_button = tk.Button(button_frame, text="Unpack", command=unpack)
+decrypt_button.grid(row=0, column=2, padx=5)
 
 log_stream = PrintLogger(log_area)
 sys.stdout = log_stream
