@@ -12,6 +12,16 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 X if game has steam drm use steamless cli to decrypt
 
+    NOTE: 4/3/2024
+    -Different button on GUI for unpacking the game exe because some games don't have the availability section on the gaming wiki, but can still be unpacked with steamless -- thus i made the functionalites separate for now. 
+    (I was only able to find 1 game that I could unpack using steamless, which is the one that doesn't have the availability section on the wiki.)
+        - I manually downloaded goldberg emulator and did the file modifications, so I was able to run the unpacked exe. But The application would open and then almost immediately close , then opened steam sign in page -- perhaps the game uses other anti-tamper measures too. I'm pretty sure it's not a steamless issue and that we can't do anything about this. *Find a game that is able to unpack and emulate*
+
+    -Hard to find games that actually work with steamless. This is because most games layer with other DRMs too, or use DRMs other than SteamStub. Thus, cannot unpack these executable files -- *Find a way to see if games use other DRMs too or solely SteamStub*?.
+
+    - Created the function to run the unpacked exe but haven't automated goldberg and file modifications yet
+
+
 X If game doesnt have drm just emulate
 
 X decorate gui
