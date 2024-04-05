@@ -7,6 +7,7 @@ import io
 import subprocess
 import threading
 import SteamDRMStripper
+import download_required
 
 
 class PrintLogger(io.StringIO):
@@ -25,25 +26,28 @@ game_name = None
 file_path = None
 
 def check_required_folder():
-    # Gets the directory of the current script
-    exe_path = os.path.dirname(os.path.abspath(__file__))
-    required_folder = os.path.join(exe_path, "Steamless.v3.1.0.3.-.by.atom0s")
-    if not os.path.exists(required_folder):
-        print("Required folder not found. Running download_required.py...")
-        # Assuming download_required.py is in the same directory as this script
-        download_script_path = os.path.join(exe_path, "download_required.py")
-        try:
-            result = subprocess.run([sys.executable, download_script_path], check=True,
-                                    text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # Instead of print, directly insert into log_area
-            log_area.insert(tk.END, result.stdout + "\n")
-            if result.stderr:
-                log_area.insert(tk.END, "Error: " + result.stderr + "\n")
-        except subprocess.CalledProcessError as e:
-            log_area.insert(
-                tk.END, "Error running download_required.py:\n" + e.stderr + "\n")
-    else:
-        print("Required folder found. Skipping download...")
+    try:
+        # Gets the directory of the current script
+        exe_path = os.path.dirname(os.path.abspath(__file__))
+
+        #Check for Steamless folder
+        steamless_folder = os.path.join(exe_path, "Steamless.v3.1.0.3.-.by.atom0s")
+        if not os.path.exists(steamless_folder):
+            log_area.insert(tk.END, "Steamless folder not found. Downloading Steamless...")
+            # Assuming download_required.py is in the same directory as this script
+            download_required.download_steamless()
+        else:
+            log_area.insert(tk.END, "Steamless folder found. Skipping Steamless download...")
+
+        #Check for Goldberg folder
+        goldberg_folder = os.path.join(exe_path, "Goldberg_Lan_Steam_Emu_v0.2.5")
+        if not os.path.exists(goldberg_folder):
+            log_area.insert(tk.END, "Goldberg folder not found. Downloading Goldberg Emulator...")
+            download_required.download_goldberg()
+        else:
+            log_area.insert(tk.END, "Goldberg folder foud. Skipping Goldberg Emulator download...")
+    except Exception as e:
+        log_area.insert(tk.END, f"Error: {e}\n")
 
 
 def browse_file():
