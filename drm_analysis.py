@@ -17,10 +17,14 @@ class DRMAnalysis:
         response = requests.get(self.base_url, params=params)
         if response.status_code == 200:
             data = response.json()
-            wikitext = data['parse']['wikitext']['*']
-            availability_section, denuvo_detected = self.extract_availability_section(
+            if 'error' in data:
+                print("Error: ", data['error']['info'])
+                return None, None
+            elif 'parse' in data:
+                wikitext = data['parse']['wikitext']['*']
+                availability_section, denuvo_detected = self.extract_availability_section(
                 wikitext)
-            return availability_section, denuvo_detected
+                return availability_section, denuvo_detected
         else:
             return None, None
 
