@@ -94,6 +94,7 @@ def unpack():
     global game_name
     if not game_name:
         log_area.insert(tk.END, "Please select a folder first.\n")
+        return
     log_area.insert(tk.END, f"Unpacking {game_name}...\n")
     SteamDRMStripper.unpack_with_steamless(file_path)
     log_area.yview(tk.END)
