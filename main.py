@@ -99,7 +99,10 @@ def unpack():
         log_area.insert(tk.END, "Please select a folder first.\n")
         return
     log_area.insert(tk.END, f"Unpacking {game_name}...\n")
-    SteamDRMStripper.unpack_with_steamless(game_file_path)
+    if steamless_folder_path:
+        SteamDRMStripper.unpack_with_steamless(game_file_path, steamless_folder_path)
+    else:
+        log_area.insert(tk.END, "Steamless folder not found. Unable to unpack.\n")
     log_area.yview(tk.END)
 
 
