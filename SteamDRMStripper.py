@@ -1,15 +1,15 @@
 import os
 import subprocess
 
-def find_steamless_cli():
-    for path in os.environ["PATH"].split(os.pathsep):
-        exe_path = os.path.join(path, "Steamless.CLI.exe")
-        if os.path.exists(exe_path):
-            return exe_path
+def find_steamless_cli(steamless_path):
+    current_dir = steamless_path
+    exe_path = os.path.join(current_dir, "Steamless.CLI.exe")
+    if os.path.exists(exe_path):
+        return exe_path
     return None
 
-def unpack_with_steamless(game_exe_path):
-    steamless_cli_path = find_steamless_cli()
+def unpack_with_steamless(game_exe_path, steamless_path):
+    steamless_cli_path = find_steamless_cli(steamless_path)
     if steamless_cli_path:
         print("Steamless CLI found at:", steamless_cli_path)
         try:
