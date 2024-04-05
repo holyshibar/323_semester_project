@@ -23,7 +23,7 @@ class PrintLogger(io.StringIO):
 # Store the folder_path and game_name globally
 folder_path = None
 game_name = None
-file_path = None
+game_file_path = None
 steamless_folder_path = None
 goldberg_folder_path = None
 
@@ -54,12 +54,12 @@ def check_required_folder():
 
 
 def browse_file():
-    global folder_path, game_name, file_path
-    file_path = filedialog.askopenfilename(
+    global folder_path, game_name, game_file_path
+    game_file_path = filedialog.askopenfilename(
         filetypes=[("Executable files", "*.exe")])
-    if file_path:
+    if game_file_path:
         # Extract the folder path and the game name from the file path
-        folder_path = os.path.dirname(file_path)
+        folder_path = os.path.dirname(game_file_path)
         print("folder_path:", folder_path)
         game_name = os.path.basename(folder_path)
         print("game_name:", game_name)
@@ -94,12 +94,12 @@ def decrypt():
 
 #Unpack and run the unpacked file if applicable
 def unpack():
-    global game_name
+    global game_name, steamless_folder_path, game_file_path
     if not game_name:
         log_area.insert(tk.END, "Please select a folder first.\n")
         return
     log_area.insert(tk.END, f"Unpacking {game_name}...\n")
-    SteamDRMStripper.unpack_with_steamless(file_path)
+    SteamDRMStripper.unpack_with_steamless(game_file_path)
     log_area.yview(tk.END)
 
 
