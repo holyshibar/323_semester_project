@@ -33,19 +33,19 @@ def check_required_folder():
         #Check for Steamless folder
         steamless_folder = os.path.join(exe_path, "Steamless.v3.1.0.3.-.by.atom0s")
         if not os.path.exists(steamless_folder):
-            log_area.insert(tk.END, "Steamless folder not found. Downloading Steamless...")
+            log_area.insert(tk.END, "Steamless folder not found. Downloading Steamless...\n")
             # Assuming download_required.py is in the same directory as this script
             download_required.download_steamless()
         else:
-            log_area.insert(tk.END, "Steamless folder found. Skipping Steamless download...")
+            log_area.insert(tk.END, "Steamless folder found. Skipping Steamless download...\n")
 
         #Check for Goldberg folder
         goldberg_folder = os.path.join(exe_path, "Goldberg_Lan_Steam_Emu_v0.2.5")
         if not os.path.exists(goldberg_folder):
-            log_area.insert(tk.END, "Goldberg folder not found. Downloading Goldberg Emulator...")
+            log_area.insert(tk.END, "Goldberg folder not found. Downloading Goldberg Emulator...\n")
             download_required.download_goldberg()
         else:
-            log_area.insert(tk.END, "Goldberg folder foud. Skipping Goldberg Emulator download...")
+            log_area.insert(tk.END, "Goldberg folder found. Skipping Goldberg Emulator download...\n")
     except Exception as e:
         log_area.insert(tk.END, f"Error: {e}\n")
 
