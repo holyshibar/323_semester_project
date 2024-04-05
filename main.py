@@ -124,8 +124,8 @@ browse_button.grid(row=0, column=0, padx=5)
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
 decrypt_button.grid(row=0, column=1, padx=5)
 
-decrypt_button = tk.Button(button_frame, text="Unpack", command=unpack)
-decrypt_button.grid(row=0, column=2, padx=5)
+unpack_button = tk.Button(button_frame, text="Unpack", command=unpack)
+unpack_button.grid(row=0, column=2, padx=5)
 
 log_stream = PrintLogger(log_area)
 sys.stdout = log_stream
