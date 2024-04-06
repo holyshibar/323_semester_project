@@ -21,7 +21,7 @@ def unpack_with_steamless(game_exe_path, steamless_path):
                 unpacked_file_path = find_unpacked_file(game_exe_path)
                 if unpacked_file_path:
                     print("Unpacked file:", unpacked_file_path)
-                    # run_unpacked_file(unpacked_file_path) #HAVE NOT AUTOMATED GOLDBERG EMULATOR AND FILE MODIFICATIONS YET. Uncomment after file modifications to run application.
+                    # run_unpacked_file(unpacked_file_path) #HAVE NOT AUTOMATED GOLDBERG EMULATOR AND FILE MODIFICATIONS YET. Run in main.py
                 else:
                     print("Unpacked file not found.")
         except Exception as e:
