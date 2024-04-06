@@ -20,13 +20,16 @@ def extract_zip(zip_path, extract_to):
 def download_steamless():
     download_url = "https://github.com/atom0s/Steamless/releases/download/v3.1.0.3/Steamless.v3.1.0.3.-.by.atom0s.zip"
     # Define the directory to extract the contents
-    extract_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Steamless.v3.1.0.3.-.by.atom0s")
+    extract_dir = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), "Steamless.v3.1.0.3.-.by.atom0s")
+
     download_and_extract(download_url, extract_dir)
 
 
 def download_goldberg():
     download_url = "https://gitlab.com/Mr_Goldberg/goldberg_emulator/uploads/2524331e488ec6399c396cf48bbe9903/Goldberg_Lan_Steam_Emu_v0.2.5.zip"
-    extract_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Goldberg_Lan_Steam_Emu_v0.2.5")
+    extract_dir = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), "Goldberg_Lan_Steam_Emu_v0.2.5")
     download_and_extract(download_url, extract_dir)
 
 
@@ -44,7 +47,8 @@ def download_and_extract(url, extract_dir):
     print(f"Extracting {zip_name}...")
     extract_zip(zip_path, extract_dir)
     print(f"Extracted {zip_name} successfully.")
+    print(
+        f"Download and extraction completed. Files are located in: {extract_dir}")
     # Optionally, delete the zip file after extraction
     os.remove(zip_path)
     print(f"Deleted {zip_name}.")
-
