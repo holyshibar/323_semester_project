@@ -8,6 +8,7 @@ import subprocess
 import threading
 import SteamDRMStripper
 import download_required
+from goldberg_emulator_implementation import GB_Modification
 
 
 class PrintLogger(io.StringIO):
@@ -105,6 +106,27 @@ def unpack():
         log_area.insert(tk.END, "Steamless folder not found. Unable to unpack.\n")
     log_area.yview(tk.END)
 
+def emulate():
+    log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
+    gb_analysis = GB_Modification(folder_path, game_name)
+    bit_version = gb_analysis.detect_bit_version()
+
+    if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
+        log_area.insert(tk.END, f"Bit version: {bit_version}\n")
+        log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
+        dll_dir = gb_analysis.find_game_dll()
+        if dll_dir:
+            log_area.insert(tk.END, "Game dll found.\n")
+            log_area.insert(tk.END, "Modifying dll file.\n")
+            modify_files = gb_analysis.modify_files(goldberg_folder_path, bit_version)
+            #RUN UNPACKED FILE HERE
+        else:
+            log_area.insert(tk.END, "Game dll not found.\n")
+    else:
+        log_area.insert(
+            tk.END, "Bit version unknown, or game is incompatible.\n")
+    log_area.yview(tk.END)
+
 
 app = tk.Tk()
 app.title('Game Folder Selector')
@@ -124,8 +146,11 @@ browse_button.grid(row=0, column=0, padx=5)
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
 decrypt_button.grid(row=0, column=1, padx=5)
 
-decrypt_button = tk.Button(button_frame, text="Unpack", command=unpack)
-decrypt_button.grid(row=0, column=2, padx=5)
+unpack_button = tk.Button(button_frame, text="Unpack", command=unpack)
+unpack_button.grid(row=0, column=2, padx=5)
+
+goldberg_button = tk.Button(button_frame, text="Emulate", command=emulate)
+goldberg_button.grid(row=0, column=3, padx=5)
 
 log_stream = PrintLogger(log_area)
 sys.stdout = log_stream
