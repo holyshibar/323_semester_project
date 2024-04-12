@@ -28,28 +28,35 @@ game_file_path = None
 steamless_folder_path = None
 goldberg_folder_path = None
 
+
 def check_required_folder():
     global steamless_folder_path, goldberg_folder_path
     try:
         # Gets the directory of the current script
         exe_path = os.path.dirname(os.path.abspath(__file__))
 
-        #Check for Steamless folder
-        steamless_folder_path = os.path.join(exe_path, "Steamless.v3.1.0.3.-.by.atom0s")
+        # Check for Steamless folder
+        steamless_folder_path = os.path.join(
+            exe_path, "Steamless.v3.1.0.3.-.by.atom0s")
         if not os.path.exists(steamless_folder_path):
-            log_area.insert(tk.END, "Steamless folder not found. Downloading Steamless...\n")
+            log_area.insert(
+                tk.END, "Steamless folder not found. Downloading Steamless...\n")
             # Assuming download_required.py is in the same directory as this script
             download_required.download_steamless()
         else:
-            log_area.insert(tk.END, "Steamless folder found. Skipping Steamless download...\n")
+            log_area.insert(
+                tk.END, "Steamless folder found. Skipping Steamless download...\n")
 
-        #Check for Goldberg folder
-        goldberg_folder_path = os.path.join(exe_path, "Goldberg_Lan_Steam_Emu_v0.2.5")
+        # Check for Goldberg folder
+        goldberg_folder_path = os.path.join(
+            exe_path, "Goldberg_Lan_Steam_Emu_v0.2.5")
         if not os.path.exists(goldberg_folder_path):
-            log_area.insert(tk.END, "Goldberg folder not found. Downloading Goldberg Emulator...\n")
+            log_area.insert(
+                tk.END, "Goldberg folder not found. Downloading Goldberg Emulator...\n")
             download_required.download_goldberg()
         else:
-            log_area.insert(tk.END, "Goldberg folder found. Skipping Goldberg Emulator download...\n")
+            log_area.insert(
+                tk.END, "Goldberg folder found. Skipping Goldberg Emulator download...\n")
     except Exception as e:
         log_area.insert(tk.END, f"Error: {e}\n")
 
@@ -98,7 +105,6 @@ def browse_file():
 
 
 def decrypt():
-
     """Searches pcgamingwikifor info, unpacks() if needed, and emulates()."""
 
     global game_name
@@ -114,20 +120,23 @@ def decrypt():
     elif availability_section:
         analysis_result = drm_analysis.analyze_steam_availability(
             availability_section)
-        #Run Steamless if game doesn't use DRM
+        # Run Steamless if game doesn't use DRM
         if "Doesn't use DRM" not in analysis_result:
             log_area.insert(tk.END, f"Unpacking {game_name}...\n")
             if steamless_folder_path:
-                unpacked_file_path = SteamDRMStripper.unpack_with_steamless(game_file_path, steamless_folder_path)
+                unpacked_file_path = SteamDRMStripper.unpack_with_steamless(
+                    game_file_path, steamless_folder_path)
             else:
-                log_area.insert(tk.END, "Steamless folder not found. Unable to unpack.\n")
-        
-        #Emulate game
+                log_area.insert(
+                    tk.END, "Steamless folder not found. Unable to unpack.\n")
+
+        # Emulate game
         if unpacked_file_path:
             emulate_game = emulate(unpacked_file_path)
         else:
             emulate_game = emulate(game_file_path)
         log_area.insert(tk.END, analysis_result)
+        log_area.insert(tk.END, "DONE")
 
     else:
         log_area.insert(
@@ -135,7 +144,9 @@ def decrypt():
 
     log_area.yview(tk.END)
 
-#Unpack and run the unpacked file if applicable
+# Unpack and run the unpacked file if applicable
+
+
 def unpack():
     global game_name, steamless_folder_path, game_file_path
     if not game_name:
@@ -143,10 +154,13 @@ def unpack():
         return
     log_area.insert(tk.END, f"Unpacking {game_name}...\n")
     if steamless_folder_path:
-        unpacked_file_path = SteamDRMStripper.unpack_with_steamless(game_file_path, steamless_folder_path)
+        unpacked_file_path = SteamDRMStripper.unpack_with_steamless(
+            game_file_path, steamless_folder_path)
     else:
-        log_area.insert(tk.END, "Steamless folder not found. Unable to unpack.\n")
+        log_area.insert(
+            tk.END, "Steamless folder not found. Unable to unpack.\n")
     log_area.yview(tk.END)
+
 
 def emulate(game_exe_path):
     log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
@@ -161,8 +175,10 @@ def emulate(game_exe_path):
         if dll_dir:
             log_area.insert(tk.END, "Game dll found.\n")
             log_area.insert(tk.END, "Modifying dll file.\n")
-            modify_files = gb_analysis.modify_files(goldberg_folder_path, bit_version)
-            run_game = SteamDRMStripper.run_unpacked_file(game_exe_path) #Game can be unpacked or not
+            modify_files = gb_analysis.modify_files(
+                goldberg_folder_path, bit_version)
+            run_game = SteamDRMStripper.run_unpacked_file(
+                game_exe_path)  # Game can be unpacked or not
         else:
             log_area.insert(tk.END, "Game dll not found.\n")
     else:

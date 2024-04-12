@@ -23,7 +23,7 @@ class DRMAnalysis:
             elif 'parse' in data:
                 wikitext = data['parse']['wikitext']['*']
                 availability_section, denuvo_detected = self.extract_availability_section(
-                wikitext)
+                    wikitext)
                 return availability_section, denuvo_detected
         else:
             return None, None
@@ -51,7 +51,7 @@ class DRMAnalysis:
                         f"Steam detected in the line: {parts[1]} ** THIS ONE ***")
                     drm_status = parts[3]
                     if 'Steam' in drm_status:
-                        analysis_result += "Uses Steam DRM\n"
+                        analysis_result += "Requires Steam\n"
                     elif 'DRM-free' in drm_status:
                         analysis_result += "Doesn't use DRM\n"
                     else:
