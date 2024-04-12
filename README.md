@@ -12,15 +12,19 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done) if game has steam drm use steamless cli to decrypt
 
-- Add: System only searches for "steam_api.dll" in find_game_dll(), and doesn't account for "steam_api64.dll". Make find_game_dll() search for "steam_api64.dll" too.
+(don't need) Add: System only searches for "steam_api.dll" in find_game_dll(), and doesn't account for "steam_api64.dll". Make find_game_dll() search for "steam_api64.dll" too.
 
     (done) Add call to emulate unpacked game in main.py in emulate() (made a function in SteamDRMStripper to do that. It doesn't fit with that file, but we'll reorganize the code later.)
 
-    X If a game has an original steam_api(64).dll file that's older than may 2016, then add the interface txt feature to the game directory. (See goldberg steam emulator readme file)
+    (don't need) If a game has an original steam_api(64).dll file that's older than may 2016, then add the interface txt feature to the game directory. (See goldberg steam emulator readme file)
 
-    X If there's time, account for Linux too? (Linux uses a .so file extention instead of .dll)
+    (don't need) If there's time, account for Linux too? (Linux uses a .so file extention instead of .dll)
 
 (done) If game doesnt have drm just emulate
+
+X Update log during a process in main.py
+
+X Update log in the correct order
 
 X Organize code/abstract code! (I replicated some of the existing code because it wasn't abstract enough for me to use it with other features.)
 
