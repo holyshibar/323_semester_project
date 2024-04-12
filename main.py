@@ -111,7 +111,8 @@ def emulate():
     gb_analysis = GB_Modification(folder_path, game_name)
     bit_version = gb_analysis.detect_bit_version()
 
-    if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
+    # if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
+    if bit_version["windows_32"] == True:
         log_area.insert(tk.END, f"Bit version: {bit_version}\n")
         log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
         dll_dir = gb_analysis.find_game_dll()
