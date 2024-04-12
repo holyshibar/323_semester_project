@@ -10,6 +10,9 @@ class GB_Modification:
         self.game_dll_path = self.find_game_dll()
 
     def find_game_dll(self):
+
+        """Finds the path of the game's dll file."""
+
         current_dir = self.game_dir
         print("Current directory:", current_dir)
         dll_path = os.path.join(current_dir, "steam_api.dll")
@@ -22,6 +25,9 @@ class GB_Modification:
         return None
     
     def backup_game_dll(self):
+
+        """If the folder doesn't exist already, then create a folder called 'Backups' in the game's directory."""
+
         dll_path = self.game_dll_path
         current_dir = self.game_dir
         if dll_path:
@@ -35,7 +41,9 @@ class GB_Modification:
             return None
         
     def detect_bit_version(self):
+
         """Detects the bit version of the game's dll file."""
+
         game_dir = self.game_dir
         bit_version = {
             "windows_64": False,
@@ -62,6 +70,9 @@ class GB_Modification:
             return None
 
     def find_appid(self):
+
+        """Finds the game's steam id on pcgamingwiki.com."""
+
         params = {
             "action": "parse",
             "format": "json",
@@ -97,6 +108,9 @@ class GB_Modification:
             return None
 
     def add_appid_txt(self):
+
+        """Creates a txt file containing the game's steam id."""
+
         game_dir = self.game_dir
         appid = self.find_appid()
         if not appid:
@@ -115,16 +129,20 @@ class GB_Modification:
         
     
     def modify_files(self, goldberg_folder_path, bit_version):
+
+        """Moves the original game's dll file into a backup folder. If the game is a 32-bit game, it copies over the steam_api.dll file
+        from the goldberg directory into the game's directory, and creates a txt file with containing the steam id in the game's directory."""
+
         #Move original game dll into a backup folder
         backup_dll_path = self.backup_game_dll()
         if backup_dll_path is None:
             print("Could not backup game dll file.")
             return
         #Find the game's corresponding dll file from Goldberg folder
-        if bit_version["windows_64"] == True:
-            dll = os.path.join(goldberg_folder_path, "steam_api64.dll")
-        elif bit_version["windows_32"] == True:
+        if bit_version["windows_32"] == True:
             dll = os.path.join(goldberg_folder_path, "steam_api.dll")
+        # elif bit_version["windows_64"] == True:
+        #     dll = os.path.join(goldberg_folder_path, "steam_api64.dll")
         # elif bit_version["linux_64"] == True:
         #     dll = os.path.join(goldberg_folder_path, "linux", "x86", "libsteam_api.so")
         # elif bit_version["linux_32"] == True:

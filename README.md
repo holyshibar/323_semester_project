@@ -10,19 +10,21 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done) select .exe and install steamless if it doesnt exist and unzip
 
-X if game has steam drm use steamless cli to decrypt
+(done) if game has steam drm use steamless cli to decrypt
 
-- Add: System only searches for "steam_api.dll" in find_game_dll(), and doesn't account for "steam_api64.dll". Make find_game_dll() search for "steam_api64.dll" too.
+(don't need) Add: System only searches for "steam_api.dll" in find_game_dll(), and doesn't account for "steam_api64.dll". Make find_game_dll() search for "steam_api64.dll" too.
 
-- Emulate button: Doesn't run the unpacked exe yet, but does file modifications with goldberg. Made it a separate GUI button for testing.
+    (done) Add call to emulate unpacked game in main.py in emulate() (made a function in SteamDRMStripper to do that. It doesn't fit with that file, but we'll reorganize the code later.)
 
-    X Add call to emulate unpacked game in main.py in emulate() (made a function in SteamDRMStripper to do that. It doesn't fit with that file, but we'll reorganize the code later.)
+    (don't need) If a game has an original steam_api(64).dll file that's older than may 2016, then add the interface txt feature to the game directory. (See goldberg steam emulator readme file)
 
-    X If a game has an original steam_api(64).dll file that's older than may 2016, then add the interface txt feature to the game directory. (See goldberg steam emulator readme file)
+    (don't need) If there's time, account for Linux too? (Linux uses a .so file extention instead of .dll)
 
-    X If there's time, account for Linux too? (Linux uses a .so file extention instead of .dll)
+(done) If game doesnt have drm just emulate
 
-X If game doesnt have drm just emulate
+X Update log during a process in main.py
+
+X Update log in the correct order
 
 X Organize code/abstract code! (I replicated some of the existing code because it wasn't abstract enough for me to use it with other features.)
 
@@ -36,14 +38,3 @@ Other notes:
 pip install requirements.txt
 
 to build: pyinstaller --onefile --windowed main.py (.exe in dist folder)
-
-
-
-
-    NOTE: 4/3/2024
-    -Different button on GUI for unpacking the game exe because some games don't have the availability section on the gaming wiki, but can still be unpacked with steamless -- thus i made the functionalites separate for now. 
-    (I was only able to find 1 game that I could unpack using steamless, which is the one that doesn't have the availability section on the wiki.)
-        - I manually downloaded goldberg emulator and did the file modifications, so I was able to run the unpacked exe. But The application would open and then almost immediately close , then opened steam sign in page -- perhaps the game uses other anti-tamper measures too. I'm pretty sure it's not a steamless issue and that we can't do anything about this. *Find a game that is able to unpack and emulate*
-
-    -Hard to find games that actually work with steamless. This is because most games layer with other DRMs too, or use DRMs other than SteamStub. Thus, cannot unpack these executable files -- *Find a way to see if games use other DRMs too or solely SteamStub*?.
-

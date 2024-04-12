@@ -16,14 +16,16 @@ def unpack_with_steamless(game_exe_path, steamless_path):
             run_steamless = subprocess.run([steamless_cli_path, game_exe_path], capture_output=True, text=True)
             if run_steamless.returncode != 0:
                 print("Error:", run_steamless.stderr) #Error message may be empty
+                print("Could not unpack file.")
             else:
                 print("Successfully unpacked file.")
                 unpacked_file_path = find_unpacked_file(game_exe_path)
                 if unpacked_file_path:
                     print("Unpacked file:", unpacked_file_path)
-                    # run_unpacked_file(unpacked_file_path) #HAVE NOT AUTOMATED GOLDBERG EMULATOR AND FILE MODIFICATIONS YET. Run in main.py
+                    return unpacked_file_path
                 else:
                     print("Unpacked file not found.")
+                    return None
         except Exception as e:
             print("Error:", e)
     else:

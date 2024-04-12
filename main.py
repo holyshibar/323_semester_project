@@ -71,7 +71,36 @@ def browse_file():
         game_name = None
 
 
+# def decrypt():
+
+#     """Analyzes DRM of the game."""
+
+#     global game_name
+#     if not game_name:
+#         log_area.insert(tk.END, "Please select a folder first.\n")
+#         return
+
+#     log_area.insert(tk.END, f"Analyzing {game_name}...\n")
+#     drm_analysis = DRMAnalysis(game_name)
+#     availability_section, denuvo_detected = drm_analysis.get_pcgamingwiki_info()
+
+#     if denuvo_detected:
+#         log_area.insert(tk.END, "Denuvo Anti-Tamper detected.\n")
+#     elif availability_section:
+#         analysis_result = drm_analysis.analyze_steam_availability(
+#             availability_section)
+#         log_area.insert(tk.END, analysis_result)
+#     else:
+#         log_area.insert(
+#             tk.END, "Availability section not found or failed to retrieve data.\n")
+
+#     log_area.yview(tk.END)
+
+
 def decrypt():
+
+    """Searches pcgamingwikifor info, unpacks() if needed, and emulates()."""
+
     global game_name
     if not game_name:
         log_area.insert(tk.END, "Please select a folder first.\n")
@@ -80,13 +109,26 @@ def decrypt():
     log_area.insert(tk.END, f"Analyzing {game_name}...\n")
     drm_analysis = DRMAnalysis(game_name)
     availability_section, denuvo_detected = drm_analysis.get_pcgamingwiki_info()
-
     if denuvo_detected:
         log_area.insert(tk.END, "Denuvo Anti-Tamper detected.\n")
     elif availability_section:
         analysis_result = drm_analysis.analyze_steam_availability(
             availability_section)
+        #Run Steamless if game doesn't use DRM
+        if "Doesn't use DRM" not in analysis_result:
+            log_area.insert(tk.END, f"Unpacking {game_name}...\n")
+            if steamless_folder_path:
+                unpacked_file_path = SteamDRMStripper.unpack_with_steamless(game_file_path, steamless_folder_path)
+            else:
+                log_area.insert(tk.END, "Steamless folder not found. Unable to unpack.\n")
+        
+        #Emulate game
+        if unpacked_file_path:
+            emulate_game = emulate(unpacked_file_path)
+        else:
+            emulate_game = emulate(game_file_path)
         log_area.insert(tk.END, analysis_result)
+
     else:
         log_area.insert(
             tk.END, "Availability section not found or failed to retrieve data.\n")
@@ -101,17 +143,18 @@ def unpack():
         return
     log_area.insert(tk.END, f"Unpacking {game_name}...\n")
     if steamless_folder_path:
-        SteamDRMStripper.unpack_with_steamless(game_file_path, steamless_folder_path)
+        unpacked_file_path = SteamDRMStripper.unpack_with_steamless(game_file_path, steamless_folder_path)
     else:
         log_area.insert(tk.END, "Steamless folder not found. Unable to unpack.\n")
     log_area.yview(tk.END)
 
-def emulate():
+def emulate(game_exe_path):
     log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
     gb_analysis = GB_Modification(folder_path, game_name)
     bit_version = gb_analysis.detect_bit_version()
 
-    if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
+    # if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
+    if bit_version["windows_32"] == True:
         log_area.insert(tk.END, f"Bit version: {bit_version}\n")
         log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
         dll_dir = gb_analysis.find_game_dll()
@@ -119,7 +162,7 @@ def emulate():
             log_area.insert(tk.END, "Game dll found.\n")
             log_area.insert(tk.END, "Modifying dll file.\n")
             modify_files = gb_analysis.modify_files(goldberg_folder_path, bit_version)
-            #RUN UNPACKED FILE HERE
+            run_game = SteamDRMStripper.run_unpacked_file(game_exe_path) #Game can be unpacked or not
         else:
             log_area.insert(tk.END, "Game dll not found.\n")
     else:
@@ -146,11 +189,11 @@ browse_button.grid(row=0, column=0, padx=5)
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
 decrypt_button.grid(row=0, column=1, padx=5)
 
-unpack_button = tk.Button(button_frame, text="Unpack", command=unpack)
-unpack_button.grid(row=0, column=2, padx=5)
+# unpack_button = tk.Button(button_frame, text="Unpack", command=unpack)
+# unpack_button.grid(row=0, column=2, padx=5)
 
-goldberg_button = tk.Button(button_frame, text="Emulate", command=emulate)
-goldberg_button.grid(row=0, column=3, padx=5)
+# goldberg_button = tk.Button(button_frame, text="Emulate", command=emulate)
+# goldberg_button.grid(row=0, column=3, padx=5)
 
 log_stream = PrintLogger(log_area)
 sys.stdout = log_stream
