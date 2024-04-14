@@ -26,13 +26,13 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done) Update log in the correct order
 
-X Organize code/abstract code! (I replicated some of the existing code because it wasn't abstract enough for me to use it with other features.)
+(done mainly) Organize code/abstract code! (I replicated some of the existing code because it wasn't abstract enough for me to use it with other features.)
 
 X decorate gui
 
 ---
 
-Bug Fixes Required
+Bug Fixes Required ALL FIXED
 
 1. recheck the find_game_dll function in goldberg_emulator_implementation. Needs to find the correct path of the steam_api64.dll file
 2. Need to replace the steam_api64.dll file in the original directory and save the original steam_api64.dll file by adding .bak at the end of it

@@ -52,3 +52,4 @@ def download_and_extract(url, extract_dir):
     # Optionally, delete the zip file after extraction
     os.remove(zip_path)
     print(f"Deleted {zip_name}.")
+    print("Downloaded and extracted successfully.")

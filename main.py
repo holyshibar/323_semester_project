@@ -30,6 +30,8 @@ goldberg_folder_path = None
 
 
 def check_required_folder():
+    '''Checks if the required folders are present. Downloads them if not found.'''
+
     global steamless_folder_path, goldberg_folder_path
     try:
         # Gets the directory of the current script
@@ -62,6 +64,7 @@ def check_required_folder():
 
 
 def browse_file():
+    '''Opens a file dialog to select a game file. Extracts the folder path and game name.'''
     global folder_path, game_name, game_file_path
     game_file_path = filedialog.askopenfilename(
         filetypes=[("Executable files", "*.exe")])
@@ -78,32 +81,6 @@ def browse_file():
         game_name = None
 
 
-# def decrypt():
-
-#     """Analyzes DRM of the game."""
-
-#     global game_name
-#     if not game_name:
-#         log_area.insert(tk.END, "Please select a folder first.\n")
-#         return
-
-#     log_area.insert(tk.END, f"Analyzing {game_name}...\n")
-#     drm_analysis = DRMAnalysis(game_name)
-#     availability_section, denuvo_detected = drm_analysis.get_pcgamingwiki_info()
-
-#     if denuvo_detected:
-#         log_area.insert(tk.END, "Denuvo Anti-Tamper detected.\n")
-#     elif availability_section:
-#         analysis_result = drm_analysis.analyze_steam_availability(
-#             availability_section)
-#         log_area.insert(tk.END, analysis_result)
-#     else:
-#         log_area.insert(
-#             tk.END, "Availability section not found or failed to retrieve data.\n")
-
-#     log_area.yview(tk.END)
-
-
 def decrypt():
     """Searches pcgamingwikifor info, unpacks() if needed, and emulates()."""
 
@@ -113,13 +90,14 @@ def decrypt():
         return
 
     log_area.insert(tk.END, f"Analyzing {game_name}...\n")
-    drm_analysis = DRMAnalysis(game_name)
+    drm_analysis = DRMAnalysis(game_name)  # need to look at
     availability_section, denuvo_detected = drm_analysis.get_pcgamingwiki_info()
     if denuvo_detected:
         log_area.insert(tk.END, "Denuvo Anti-Tamper detected.\n")
     elif availability_section:
         analysis_result = drm_analysis.analyze_steam_availability(
             availability_section)
+
         # Run Steamless if game doesn't use DRM
         if "Doesn't use DRM" not in analysis_result:
             log_area.insert(tk.END, f"Unpacking {game_name}...\n")
@@ -130,7 +108,7 @@ def decrypt():
                 log_area.insert(
                     tk.END, "Steamless folder not found. Unable to unpack.\n")
 
-        # Emulate game
+        # Emulate game NEED TO LOOK AT
         if unpacked_file_path:
             emulate_game = emulate(unpacked_file_path)
         else:
@@ -144,9 +122,36 @@ def decrypt():
 
     log_area.yview(tk.END)
 
-# Unpack and run the unpacked file if applicable
+
+def emulate(game_exe_path):
+    log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
+    gb_analysis = GB_Modification(folder_path, game_name)
+    dll_path = gb_analysis.find_game_dll()
+
+    if dll_path is not None:
+        dll_basename = os.path.basename(dll_path)
+
+        if dll_basename == "steam_api64.dll":
+            log_area.insert(tk.END, "64-bit application\n")
+            log_area.insert(tk.END, f"{dll_basename} found at {dll_path}\n")
+            log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
+            gb_analysis.modify_files(
+                goldberg_folder_path, dll_path, game_exe_path)
+            SteamDRMStripper.run_unpacked_file(game_exe_path)
+        elif dll_basename == "steam_api.dll":
+            log_area.insert(tk.END, "32-bit application\n")
+            log_area.insert(tk.END, f"{dll_basename} found at {dll_path}\n")
+            log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
+            gb_analysis.modify_files(
+                goldberg_folder_path, dll_path, game_exe_path)
+            SteamDRMStripper.run_unpacked_file(game_exe_path)
+    else:
+        log_area.insert(tk.END, "DLL file not found.\n")
+        print("DLL file not found.")
+    log_area.yview(tk.END)
 
 
+'''  TESTING
 def unpack():
     global game_name, steamless_folder_path, game_file_path
     if not game_name:
@@ -160,38 +165,7 @@ def unpack():
         log_area.insert(
             tk.END, "Steamless folder not found. Unable to unpack.\n")
     log_area.yview(tk.END)
-
-
-def emulate(game_exe_path):
-    log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
-    gb_analysis = GB_Modification(folder_path, game_name)
-    bit_version = gb_analysis.detect_bit_version()
-    print("bit_version:", bit_version)
-
-    if bit_version is None:
-        log_area.insert(
-            tk.END, "Failed to detect bit version.  Assuming 32 bit\n")
-        bit_version = {"windows_32": True}
-
-    # if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
-    if bit_version["windows_32"] == True:
-        log_area.insert(tk.END, f"Bit version: {bit_version}\n")
-        log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
-        dll_dir = gb_analysis.find_game_dll()
-        if dll_dir:
-            log_area.insert(tk.END, "Game dll found.\n")
-            log_area.insert(tk.END, "Modifying dll file.\n")
-            modify_files = gb_analysis.modify_files(
-                goldberg_folder_path, bit_version)
-            run_game = SteamDRMStripper.run_unpacked_file(
-                game_exe_path)  # Game can be unpacked or not
-        else:
-            log_area.insert(tk.END, "Game dll not found.\n")
-    else:
-        log_area.insert(
-            tk.END, "Bit version unknown, or game is incompatible.\n")
-    log_area.yview(tk.END)
-
+'''
 
 app = tk.Tk()
 app.title('Game Folder Selector')
@@ -211,6 +185,8 @@ browse_button.grid(row=0, column=0, padx=5)
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
 decrypt_button.grid(row=0, column=1, padx=5)
 
+
+# Testing
 # unpack_button = tk.Button(button_frame, text="Unpack", command=unpack)
 # unpack_button.grid(row=0, column=2, padx=5)
 

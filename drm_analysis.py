@@ -61,11 +61,12 @@ class DRMAnalysis:
 
 
 '''
-# manual usage
+# manual usage for TESTING
+
 # game_name = "Palworld"  # expected no drm
 # game_name = "Visions of Mana"  # expected denuvo
 # game_name = "Factorio"  # expected steam
-game_name = "Lethal Company"  # expected steam
+game_name = "Totally Accurate Battle Simulator"  # expected steam
 
 # Instantiate the DRMAnalysis class with the game name
 drm_analysis = DRMAnalysis(game_name)
@@ -84,4 +85,4 @@ elif availability_section:
     print(analysis_result)  # This will print the analysis result
 else:
     print("Availability section not found or failed to retrieve data for", game_name)
-'''
+ '''

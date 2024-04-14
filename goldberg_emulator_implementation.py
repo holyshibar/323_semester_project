@@ -1,6 +1,5 @@
 import os
 import shutil
-import subprocess
 import requests
 
 
@@ -15,73 +14,16 @@ class GB_Modification:
 
         current_dir = self.game_dir
         print("Current directory:", current_dir)
-        dll_path = os.path.join(current_dir, "steam_api64.dll")
-        dll_path = os.path.normpath(dll_path)
-        # Check if the DLL exists in the current directory
-        if os.path.exists(dll_path):
-            print(f"dll path in current directory: {dll_path}")
-            print("dll path found.")
-            return dll_path
-
-        # If not found, search in all nested folders
-        for root, dirs, files in os.walk(current_dir):
-            if "steam_api64.dll" in files:
-                dll_path = os.path.join(root, "steam_api64.dll")
-                print(f"dll path: {dll_path}")
-                print("dll path found in nested folder.")
-                return dll_path
-
-        print("dll path not found.")
+        # Loop through the directory and all subdirectories
+        for root, dirs, files in os.walk(self.game_dir):
+            for file in files:
+                # Check for either steam_api64.dll or steam_api.dll
+                if file == "steam_api64.dll" or file == "steam_api.dll":
+                    print(f"Found {file}")
+                    # Return the path to the found file
+                    return os.path.join(root, file)
+        # If no file is found, return None
         return None
-
-    def backup_game_dll(self):
-        """If the folder doesn't exist already, then create a folder called 'Backups' in the game's directory."""
-
-        dll_path = self.game_dll_path
-        current_dir = self.game_dir
-        if dll_path:
-            backup_dir = os.path.join(current_dir, "Backups")
-            if not os.path.exists(backup_dir):
-                os.makedirs(backup_dir)
-            backup_file = os.path.join(backup_dir, os.path.basename(dll_path))
-            shutil.move(dll_path, backup_file)
-            return backup_file
-        else:
-            return None
-
-    def detect_bit_version(self):
-        """Detects the bit version of the game's dll file."""
-
-        game_dir = self.game_dir
-        bit_version = {
-            "windows_64": False,
-            "windows_32": False
-        }
-        os.chdir(game_dir)
-        print("current directory", os.getcwd())
-        try:
-            result = subprocess.run(
-                ["wsl", "file", "steam_api64.dll"], capture_output=True, text=True)
-            output = result.stdout
-            print(f"detecting bit version: {output}")
-            if result.returncode != 0:
-                print("Error:", result.stderr)
-                return None
-            else:
-                if "x86_64" in output:
-                    bit_version["windows_64"] = True
-                    print("64-bit version")
-                elif "Intel 80386" in output:
-                    bit_version["windows_32"] = True
-                    print("32-bit version")
-                elif "P" in output:
-                    bit_version["windows_64"] = True
-                    print("windows_64 version")
-                return bit_version
-
-        except Exception as e:
-            print("Error:", e)
-            return None
 
     def find_appid(self):
         """Finds the game's steam id on pcgamingwiki.com."""
@@ -141,32 +83,33 @@ class GB_Modification:
             else:
                 print("steam_appid.txt already exists. Skipping step...\n")
 
-    def modify_files(self, goldberg_folder_path, bit_version):
-        """Moves the original game's dll file into a backup folder. If the game is a 32-bit game, it copies over the steam_api64.dll file
-        from the goldberg directory into the game's directory, and creates a txt file with containing the steam id in the game's directory."""
+    def modify_files(self, goldberg_folder_path, dll_path, game_exe_path):
+        dll_dir = os.path.dirname(dll_path)
+        game_exe_path = os.path.dirname(game_exe_path)
+        dll_file_name = os.path.basename(dll_path)
 
-        # Move original game dll into a backup folder
-        backup_dll_path = self.backup_game_dll()
-        if backup_dll_path is None:
-            print("Could not backup game dll file.")
-            return
-        # Find the game's corresponding dll file from Goldberg folder
-        if bit_version["windows_32"] == True:
-            dll = os.path.join(goldberg_folder_path, "steam_api64.dll")
-        # elif bit_version["windows_64"] == True:
-        #     dll = os.path.join(goldberg_folder_path, "steam_api64.dll")
-        # elif bit_version["linux_64"] == True:
-        #     dll = os.path.join(goldberg_folder_path, "linux", "x86", "libsteam_api.so")
-        # elif bit_version["linux_32"] == True:
-        #     dll = os.path.join(goldberg_folder_path, "linux", "x86_64", "libsteam_api.so")
+        print("DLL directory:", dll_dir)
+        print("DLL file name:", dll_file_name)
+        print("Game exe path:", game_exe_path)
+
+        # Create a backup directory
+        backup_dir = os.path.join(dll_dir, "backup_dll_dir")
+        if not os.path.exists(backup_dir):
+            os.makedirs(backup_dir)
+
+        # Move and rename the original dll file to the backup directory
+        backup_file_path = os.path.join(backup_dir, dll_file_name + ".bak")
+        shutil.move(dll_path, backup_file_path)
+
+        # Copy the corresponding file from the Goldberg folder
+        source_file_path = os.path.join(goldberg_folder_path, dll_file_name)
+        if os.path.exists(source_file_path):
+            shutil.copy(source_file_path, dll_path)
         else:
-            print("Could not detect bit verison.")
-        # Copy Goldberg's dll file into the game folder
-        game_dir = self.game_dir
-        try:
-            shutil.copy(dll, game_dir)
-            print(f"Successfully copied {os.path.basename(dll)} to {game_dir}")
-            # Make steam_appid.txt if there isn't already one
-            appid_txt = self.add_appid_txt()
-        except Exception as e:
-            print("Error:", e)
+            print(
+                f"Error: The file {dll_file_name} was not found in the Goldberg folder.")
+
+        appid_txt = self.add_appid_txt()
+
+        print("Backedup original dll and replaced with goldberg")
+        print("Created steam_appid.txt")
