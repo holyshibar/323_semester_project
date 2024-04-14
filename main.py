@@ -114,6 +114,10 @@ def decrypt():
         else:
             emulate(game_file_path)
         log_area.insert(tk.END, analysis_result)
+        print(steamless_folder_path)
+        print(goldberg_folder_path)
+        print(game_file_path)
+        print(game_name)
         log_area.insert(tk.END, "DONE")
 
     else:
