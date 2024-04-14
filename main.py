@@ -141,7 +141,7 @@ def emulate(game_exe_path):
             log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
             gb_analysis.modify_files(
                 goldberg_folder_path, dll_path, game_exe_path)
-            time.sleep(15)
+            time.sleep(1)
             SteamDRMStripper.run_unpacked_file(game_exe_path)
         elif dll_basename == "steam_api.dll":
             log_area.insert(tk.END, "32-bit application\n")
@@ -149,7 +149,7 @@ def emulate(game_exe_path):
             log_area.insert(tk.END, f"Preparing to emulate {game_name}...\n")
             gb_analysis.modify_files(
                 goldberg_folder_path, dll_path, game_exe_path)
-            time.sleep(15)
+            time.sleep(1)
             SteamDRMStripper.run_unpacked_file(game_exe_path)
     else:
         log_area.insert(tk.END, "DLL file not found.\n")
