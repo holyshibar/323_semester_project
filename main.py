@@ -166,6 +166,12 @@ def emulate(game_exe_path):
     log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
     gb_analysis = GB_Modification(folder_path, game_name)
     bit_version = gb_analysis.detect_bit_version()
+    print("bit_version:", bit_version)
+
+    if bit_version is None:
+        log_area.insert(
+            tk.END, "Failed to detect bit version.  Assuming 32 bit\n")
+        bit_version = {"windows_32": True}
 
     # if bit_version["windows_64"] == True or bit_version["windows_32"]==True:
     if bit_version["windows_32"] == True:

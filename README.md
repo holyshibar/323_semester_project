@@ -22,15 +22,30 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done) If game doesnt have drm just emulate
 
-X Update log during a process in main.py
+(done) Update log during a process in main.py
 
-X Update log in the correct order
+(done) Update log in the correct order
 
 X Organize code/abstract code! (I replicated some of the existing code because it wasn't abstract enough for me to use it with other features.)
 
 X decorate gui
 
+---
+
+Bug Fixes Required
+
+1. recheck the find_game_dll function in goldberg_emulator_implementation. Needs to find the correct path of the steam_api64.dll file
+2. Need to replace the steam_api64.dll file in the original directory and save the original steam_api64.dll file by adding .bak at the end of it
+3. need to change it so that when it gets unpacked it doesn't name the new unpacked version as {game}.exe.unpacked.exe. We need to save the old game or save the copy of the old game as {game}.exe.bak and then delete the original {game}.exe and then make the new decrypted with steamless game {game}.exe
+4. modern pcs mainly use 64bit so change the logic to use steam_api64.dll instead of steam_api.dll
+
+game that uses steam stub drm and requires steamless decryption: Totally Accurate Battle Simulator
+game that doesnt need to use steamstub drm and can be emulated directly: Lethal company.
+
+---
+
 Other notes:
+
 - There's a command that requires system to already have wsl to run the command. Is that an issue? See detect_bit_version() in emulate.py
 
 **Usage:**

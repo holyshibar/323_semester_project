@@ -15,18 +15,18 @@ class GB_Modification:
 
         current_dir = self.game_dir
         print("Current directory:", current_dir)
-        dll_path = os.path.join(current_dir, "steam_api.dll")
+        dll_path = os.path.join(current_dir, "steam_api64.dll")
         dll_path = os.path.normpath(dll_path)
         # Check if the DLL exists in the current directory
         if os.path.exists(dll_path):
-            print(f"dll path: {dll_path}")
+            print(f"dll path in current directory: {dll_path}")
             print("dll path found.")
             return dll_path
 
         # If not found, search in all nested folders
         for root, dirs, files in os.walk(current_dir):
-            if "steam_api.dll" in files:
-                dll_path = os.path.join(root, "steam_api.dll")
+            if "steam_api64.dll" in files:
+                dll_path = os.path.join(root, "steam_api64.dll")
                 print(f"dll path: {dll_path}")
                 print("dll path found in nested folder.")
                 return dll_path
@@ -61,17 +61,22 @@ class GB_Modification:
         print("current directory", os.getcwd())
         try:
             result = subprocess.run(
-                ["wsl", "file", "steam_api.dll"], capture_output=True, text=True)
+                ["wsl", "file", "steam_api64.dll"], capture_output=True, text=True)
             output = result.stdout
-            print(output)
+            print(f"detecting bit version: {output}")
             if result.returncode != 0:
                 print("Error:", result.stderr)
                 return None
             else:
                 if "x86_64" in output:
                     bit_version["windows_64"] = True
+                    print("64-bit version")
                 elif "Intel 80386" in output:
                     bit_version["windows_32"] = True
+                    print("32-bit version")
+                elif "P" in output:
+                    bit_version["windows_64"] = True
+                    print("windows_64 version")
                 return bit_version
 
         except Exception as e:
@@ -132,12 +137,12 @@ class GB_Modification:
             if not os.path.exists(appid_txt):
                 with open(appid_txt, "w") as file:
                     file.write(appid)
-                print("Successfully created steam_appid.txt\n")
+                print(f"Successfully created steam_appid.txt in {game_dir}\n")
             else:
                 print("steam_appid.txt already exists. Skipping step...\n")
 
     def modify_files(self, goldberg_folder_path, bit_version):
-        """Moves the original game's dll file into a backup folder. If the game is a 32-bit game, it copies over the steam_api.dll file
+        """Moves the original game's dll file into a backup folder. If the game is a 32-bit game, it copies over the steam_api64.dll file
         from the goldberg directory into the game's directory, and creates a txt file with containing the steam id in the game's directory."""
 
         # Move original game dll into a backup folder
@@ -147,7 +152,7 @@ class GB_Modification:
             return
         # Find the game's corresponding dll file from Goldberg folder
         if bit_version["windows_32"] == True:
-            dll = os.path.join(goldberg_folder_path, "steam_api.dll")
+            dll = os.path.join(goldberg_folder_path, "steam_api64.dll")
         # elif bit_version["windows_64"] == True:
         #     dll = os.path.join(goldberg_folder_path, "steam_api64.dll")
         # elif bit_version["linux_64"] == True:
