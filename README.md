@@ -28,11 +28,11 @@ We make a .exe and when the user clicks to run it, it brings up a menu that allo
 
 (done mainly) Organize code/abstract code! (I replicated some of the existing code because it wasn't abstract enough for me to use it with other features.)
 
-X decorate gui
+(done somewhat) decorate gui
 
 ---
 
-Bug Fixes Required ALL FIXED
+Bug Fixes Required **_ALL FIXED_**
 
 1. recheck the find_game_dll function in goldberg_emulator_implementation. Needs to find the correct path of the steam_api64.dll file
 2. Need to replace the steam_api64.dll file in the original directory and save the original steam_api64.dll file by adding .bak at the end of it
