@@ -110,9 +110,9 @@ def decrypt():
 
         # Emulate game NEED TO LOOK AT
         if unpacked_file_path:
-            emulate_game = emulate(unpacked_file_path)
+            emulate(unpacked_file_path)
         else:
-            emulate_game = emulate(game_file_path)
+            emulate(game_file_path)
         log_area.insert(tk.END, analysis_result)
         log_area.insert(tk.END, "DONE")
 
