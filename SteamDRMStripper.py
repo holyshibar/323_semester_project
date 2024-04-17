@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-
+# Finds the Steamless CLI executable file
 def find_steamless_cli(steamless_path):
     current_dir = steamless_path
     exe_path = os.path.join(current_dir, "Steamless.CLI.exe")
@@ -9,7 +9,7 @@ def find_steamless_cli(steamless_path):
         return exe_path
     return None
 
-
+# Unpacks the game's executable file using Steamless
 def unpack_with_steamless(game_exe_path, steamless_path):
     steamless_cli_path = find_steamless_cli(steamless_path)
     if steamless_cli_path:
@@ -17,13 +17,13 @@ def unpack_with_steamless(game_exe_path, steamless_path):
         try:
             run_steamless = subprocess.run(
                 [steamless_cli_path, game_exe_path], capture_output=True, text=True)
-            if run_steamless.returncode != 0:
+            if run_steamless.returncode != 0: # Steamless CLI returns a non-zero exit code for SteamStub
                 # Error message may be empty
                 # print("Error:", run_steamless.stderr)
                 print("Does not contain SteamStub.")
-            else:
+            else: # Steamless CLI returns a zero exit code
                 print("Contains SteamStub and Decrypted it")
-                unpacked_file_path = find_unpacked_file(game_exe_path)
+                unpacked_file_path = find_unpacked_file(game_exe_path) 
                 if unpacked_file_path:
                     print("Unpacked file:", unpacked_file_path)
                     return unpacked_file_path
@@ -35,13 +35,13 @@ def unpack_with_steamless(game_exe_path, steamless_path):
     else:
         print("Steamless CLI not found.")
 
-
+# Finds the unpacked file within the game directories
 def find_unpacked_file(game_exe_path):
     game_dir = os.path.dirname(game_exe_path)
     files = os.listdir(game_dir)
     backup_dir = os.path.join(game_dir, "backup_game_dir")
 
-    # Ensure the backup directory exists
+    # Ensures the backup directory exists
     if not os.path.exists(backup_dir):
         os.makedirs(backup_dir)
 
@@ -50,16 +50,16 @@ def find_unpacked_file(game_exe_path):
             print("Unpacked file found:", file)
             print("Backing up original file...")
 
-            # Form the full path for the backup file
+            # Forms the full path for the backup file
             original_file_full_path = os.path.join(
                 game_dir, os.path.basename(game_exe_path))
             backup_file_full_path = os.path.join(
                 backup_dir, os.path.basename(game_exe_path) + ".bak")
 
-            # Rename and move the original executable to the backup directory
+            # Renames and move the original executable to the backup directory
             os.rename(original_file_full_path, backup_file_full_path)
 
-            # Rename the unpacked file to the original executable name
+            # Renames the unpacked file to the original executable name
             unpacked_file_full_path = os.path.join(game_dir, file)
             os.rename(unpacked_file_full_path, original_file_full_path)
 
@@ -69,7 +69,7 @@ def find_unpacked_file(game_exe_path):
             return original_file_full_path
     return None
 
-
+# Runs the unpacked game executable file
 def run_unpacked_file(file_path):
     try:
         subprocess.run([file_path])
