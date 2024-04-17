@@ -10,17 +10,17 @@ class GB_Modification:
         self.game_dll_path = self.find_game_dll()
 
     def find_game_dll(self):
-        """Finds the path of the game's dll file."""
+        """Finds the path of the game's Dynamic Link Library (DLL file)."""
 
         current_dir = self.game_dir
         print("Current directory:", current_dir)
-        # Loop through the directory and all subdirectories
+        # Loops through the directory and all subdirectories
         for root, dirs, files in os.walk(self.game_dir):
             for file in files:
-                # Check for either steam_api64.dll or steam_api.dll
+                # Checks for either steam_api64.dll or steam_api.dll
                 if file == "steam_api64.dll" or file == "steam_api.dll":
                     print(f"Found {file}")
-                    # Return the path to the found file
+                    # Returns the path to the found file
                     return os.path.join(root, file)
         # If no file is found, return None
         return None
@@ -65,7 +65,7 @@ class GB_Modification:
             return None
 
     def add_appid_txt(self):
-        """Creates a txt file containing the game's steam id."""
+        """Creates a TXT file containing the game's steam id."""
 
         game_dir = self.game_dir
         appid = self.find_appid()
@@ -73,9 +73,9 @@ class GB_Modification:
             print("Could not find Steam appid.")
             return
         else:
-            # Check to see if steam_appid.txt exists already
+            # Checks to see if steam_appid.txt exists already
             appid_txt = os.path.join(game_dir, "steam_appid.txt")
-            # if the txt file doesn't exist, make it and write its app id to the file
+            # If the TXT file doesn't exist, make it and write its app id to the file
             if not os.path.exists(appid_txt):
                 with open(appid_txt, "w") as file:
                     file.write(appid)
@@ -83,6 +83,7 @@ class GB_Modification:
             else:
                 print("steam_appid.txt already exists. Skipping step...\n")
 
+    # Modifies the games files by backing up the original DLL file before replacing it with a modified DLL file from Goldberg folder
     def modify_files(self, goldberg_folder_path, dll_path, game_exe_path):
         dll_dir = os.path.dirname(dll_path)
         game_exe_path = os.path.dirname(game_exe_path)
@@ -92,16 +93,16 @@ class GB_Modification:
         print("DLL file name:", dll_file_name)
         print("Game exe path:", game_exe_path)
 
-        # Create a backup directory
+        # Creates a backup directory
         backup_dir = os.path.join(dll_dir, "backup_dll_dir")
         if not os.path.exists(backup_dir):
             os.makedirs(backup_dir)
 
-        # Move and rename the original dll file to the backup directory
+        # Moves and renames the original dll file to the backup directory
         backup_file_path = os.path.join(backup_dir, dll_file_name + ".bak")
         shutil.move(dll_path, backup_file_path)
 
-        # Copy the corresponding file from the Goldberg folder
+        # Copies the corresponding file from the Goldberg folder
         source_file_path = os.path.join(goldberg_folder_path, dll_file_name)
         if os.path.exists(source_file_path):
             shutil.copy(source_file_path, dll_path)
@@ -109,6 +110,7 @@ class GB_Modification:
             print(
                 f"Error: The file {dll_file_name} was not found in the Goldberg folder.")
 
+        # Creates a TXT file with the corresponding game's Steam Application ID
         appid_txt = self.add_appid_txt()
 
         print("Backedup original dll and replaced with goldberg")
