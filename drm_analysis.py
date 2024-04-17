@@ -6,7 +6,9 @@ class DRMAnalysis:
         self.game_name = game_name
         self.base_url = "https://www.pcgamingwiki.com/w/api.php"
 
+    # Retrieves relevant data in order to analyze DRM information for a given Steam game
     def get_pcgamingwiki_info(self):
+        # Assembles the necessary parameters for the PCGamingWiki API request
         params = {
             "action": "parse",
             "format": "json",
@@ -14,8 +16,8 @@ class DRMAnalysis:
             "prop": "wikitext"
         }
         print("game name:", self.game_name)
-        response = requests.get(self.base_url, params=params)
-        if response.status_code == 200:
+        response = requests.get(self.base_url, params=params) # Sends a get request to the API
+        if response.status_code == 200: # Checks to see if there was an error upon request, if not, start extracting data
             data = response.json()
             if 'error' in data:
                 print("Error: ", data['error']['info'])
@@ -28,6 +30,7 @@ class DRMAnalysis:
         else:
             return None, None
 
+    # From the WikiText, extracts the availability section by finding the start and end indexes
     def extract_availability_section(self, wikitext):
         start_index = wikitext.find("==Availability==")
         if start_index == -1:
@@ -39,6 +42,7 @@ class DRMAnalysis:
 
         return wikitext[start_index:end_index], "Denuvo" in wikitext
 
+    # Based on the extracted availability section, examines Steams' availability and usage of the game's DRM info
     def analyze_steam_availability(self, availability_section):
         analysis_result = ""
         if availability_section:
