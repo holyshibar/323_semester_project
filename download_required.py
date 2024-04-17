@@ -2,7 +2,7 @@ import requests
 from zipfile import ZipFile
 import os
 
-
+# Downloads a file from the given URL to save it locally
 def download_file(url, local_filename):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
@@ -11,12 +11,12 @@ def download_file(url, local_filename):
                 f.write(chunk)
     return local_filename
 
-
+# Extract ZIP File contents to a specified directory
 def extract_zip(zip_path, extract_to):
     with ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
 
-
+# Download and extraction of the Steamless Tool from the following repository
 def download_steamless():
     download_url = "https://github.com/atom0s/Steamless/releases/download/v3.1.0.3/Steamless.v3.1.0.3.-.by.atom0s.zip"
     # Define the directory to extract the contents
@@ -25,14 +25,14 @@ def download_steamless():
 
     download_and_extract(download_url, extract_dir)
 
-
+# Download and extraction of the Golberg Emulator Tool from the following repository
 def download_goldberg():
     download_url = "https://gitlab.com/Mr_Goldberg/goldberg_emulator/uploads/2524331e488ec6399c396cf48bbe9903/Goldberg_Lan_Steam_Emu_v0.2.5.zip"
     extract_dir = os.path.join(os.path.dirname(
         os.path.abspath(__file__)), "Goldberg_Lan_Steam_Emu_v0.2.5")
     download_and_extract(download_url, extract_dir)
 
-
+# Script for the download and extraction process from given url
 def download_and_extract(url, extract_dir):
     zip_name = os.path.basename(url)
     # Determine the directory of this script
