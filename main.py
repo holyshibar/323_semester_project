@@ -10,7 +10,7 @@ import SteamDRMStripper
 import download_required
 from goldberg_emulator_implementation import GB_Modification
 
-
+# Integrates the console output into the tkinter GUI
 class PrintLogger(io.StringIO):
     def __init__(self, log_area):
         super().__init__()
@@ -20,18 +20,15 @@ class PrintLogger(io.StringIO):
         self.log_area.insert(tk.END, text)
         self.log_area.yview(tk.END)
 
-
-# Store the folder_path and game_name globally
+# Stores the folder_path and game_name globally along with other global variables
 folder_path = None
 game_name = None
 game_file_path = None
 steamless_folder_path = None
 goldberg_folder_path = None
 
-
 def check_required_folder():
     '''Checks if the required folders are present. Downloads them if not found.'''
-
     global steamless_folder_path, goldberg_folder_path
     try:
         # Gets the directory of the current script
@@ -62,7 +59,6 @@ def check_required_folder():
     except Exception as e:
         log_area.insert(tk.END, f"Error: {e}\n")
 
-
 def browse_file():
     '''Opens a file dialog to select a game file. Extracts the folder path and game name.'''
     global folder_path, game_name, game_file_path
@@ -80,10 +76,8 @@ def browse_file():
         folder_path = None
         game_name = None
 
-
 def decrypt():
     """Searches pcgamingwikifor info, unpacks() if needed, and emulates()."""
-
     global game_name
     if not game_name:
         log_area.insert(tk.END, "Please select a folder first.\n")
@@ -126,7 +120,7 @@ def decrypt():
 
     log_area.yview(tk.END)
 
-
+# Upon analyzing the bit version of the game's executable, commences emulation via Goldberg Emulator
 def emulate(game_exe_path):
     log_area.insert(tk.END, f"Analyzing bit version of {game_name}...\n")
     gb_analysis = GB_Modification(folder_path, game_name)
@@ -155,7 +149,6 @@ def emulate(game_exe_path):
         log_area.insert(tk.END, "DLL file not found.\n")
         print("DLL file not found.")
     log_area.yview(tk.END)
-
 
 '''  TESTING
 def unpack():
@@ -190,7 +183,6 @@ browse_button.grid(row=0, column=0, padx=5)
 
 decrypt_button = tk.Button(button_frame, text="Decrypt", command=decrypt)
 decrypt_button.grid(row=0, column=1, padx=5)
-
 
 # Testing
 # unpack_button = tk.Button(button_frame, text="Unpack", command=unpack)
